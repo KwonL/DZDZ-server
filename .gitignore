@@ -1,9 +1,14 @@
+# IDE
 .vscode/
 
+# Secrets
 .env
 
+# Python
 .python-version
 __pycache__/
 *.pyc
 
+# local data
 db.sqlite3
+media/
