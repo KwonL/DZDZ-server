@@ -20,4 +20,4 @@ class GalleryListAPI(ListCreateAPIView):
         )
         if res.status_code == 200:
             name = res.json().get("class")
-        serializer.save(name=name)
+        serializer.save(user=self.request.user, name=name)

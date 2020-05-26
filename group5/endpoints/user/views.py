@@ -10,6 +10,12 @@ from .serializers import LoginSerializer
 class UserLoginAPI(APIView):
     permission_classes = [permissions.AllowAny]
 
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return Response({})
+        else:
+            return Response({}, status=status.HTTP_403_FORBIDDEN)
+
     def post(self, *args, **kwargs):
         serializer = LoginSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)

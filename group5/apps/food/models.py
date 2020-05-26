@@ -16,6 +16,12 @@ class FoodGallery(models.Model):
         ("저녁", "저녁"),
     ]
 
+    user = models.ForeignKey(
+        "user.User",
+        on_delete=models.SET_NULL,
+        related_name="photos",
+        null=True,
+    )
     time = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to=gallery_image_path)
     type = models.CharField(max_length=10, choices=type_choices, default="아침")
