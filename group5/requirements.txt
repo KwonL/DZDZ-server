@@ -13,3 +13,6 @@ black==19.10b0
 # Misc
 Pillow==7.1.2
 requests==2.23.0
+
+# Prod
+gunicorn==20.0.4
