@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions
 
-from .serializers import LoginSerializer
+from .serializers import LoginSerializer, UserSerializer
 
 
 class UserLoginAPI(APIView):
@@ -12,7 +12,8 @@ class UserLoginAPI(APIView):
 
     def get(self, *args, **kwargs):
         if self.request.user.is_authenticated:
-            return Response({})
+            serializer = UserSerializer(instance=self.request.user)
+            return Response(serializer.data)
         else:
             return Response({}, status=status.HTTP_403_FORBIDDEN)
 
@@ -24,7 +25,6 @@ class UserLoginAPI(APIView):
         user = authenticate(
             username=data.get("username"), password=data.get("password")
         )
-        print(user)
         if user:
             login(self.request, user)
             return Response({"msg": "logined"})
