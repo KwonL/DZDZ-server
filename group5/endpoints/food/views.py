@@ -19,5 +19,5 @@ class GalleryListAPI(ListCreateAPIView):
             files={"file": file},
         )
         if res.status_code == 200:
-            name = res.json().get("class")
+            name = res.json().get("class").replace("_", " ")
         serializer.save(user=self.request.user, name=name)

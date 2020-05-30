@@ -26,6 +26,22 @@ class FoodGallery(models.Model):
     image = models.ImageField(upload_to=gallery_image_path)
     type = models.CharField(max_length=10, choices=type_choices, default="아침")
     name = models.CharField(max_length=255, blank=True)
+    nutrient = models.ForeignKey(
+        "Nutrient",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="foods",
+    )
 
     class Meta:
         db_table = "food_gallery"
+
+
+class Nutrient(models.Model):
+    food_name = models.CharField(max_length=255)
+    carbohydrate = models.FloatField()
+    protein = models.FloatField()
+    fat = models.FloatField()
+    salt = models.FloatField()
+    kcal = models.FloatField()
