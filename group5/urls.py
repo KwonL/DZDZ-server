@@ -17,7 +17,10 @@ urlpatterns += [
 ]
 
 # Food
-urlpatterns += [path("api/food/gallery", food_views.GalleryListAPI.as_view())]
+urlpatterns += [
+    path("api/food/gallery", food_views.GalleryListAPI.as_view()),
+    path("api/home", food_views.HomeScreenAPI.as_view()),
+]
 
 if settings.DEBUG:
     urlpatterns += static(

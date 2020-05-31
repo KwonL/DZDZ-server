@@ -2,10 +2,30 @@ import base64
 
 import requests
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.food.models import FoodGallery, Nutrient
 
 from .serializers import GallerySerializer
+
+
+class HomeScreenAPI(APIView):
+    def get(self, *args, **kwargs):
+        user = self.request.user
+        result = {"kor_name": user.kor_name}
+        cnt = FoodGallery.objects.filter(user=user).count()
+        # 3으로 나눴을 때 남는 음식을 가져옴
+        foods = (
+            FoodGallery.objects.select_related("nutrient")
+            .filter(user=user)
+            .order_by("id")[cnt - cnt % 3 :]
+        )
+        result.update(
+            {"calories": [f.nutrient.kcal if f.nutrient else 0 for f in foods]}
+        )
+
+        return Response(result)
 
 
 class GalleryListAPI(ListCreateAPIView):
