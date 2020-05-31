@@ -1,7 +1,7 @@
 import base64
 
 import requests
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -31,12 +31,13 @@ class HomeScreenAPI(APIView):
 
 class GalleryListAPI(ListCreateAPIView):
     serializer_class = GallerySerializer
+    pagination_class = None
 
     def get_queryset(self):
         return (
             FoodGallery.objects.select_related("nutrient")
             .filter(user=self.request.user)
-            .order_by("-id")
+            .order_by("-id")[:21]
         )
 
     def perform_create(self, serializer):
@@ -49,3 +50,9 @@ class GalleryListAPI(ListCreateAPIView):
             name = res.json().get("class").replace("_", " ")
         nutrient = Nutrient.objects.filter(food_name=name).first()
         serializer.save(user=self.request.user, name=name, nutrient=nutrient)
+
+
+class GalleryDetailAPI(RetrieveDestroyAPIView):
+    queryset = FoodGallery.objects.all()
+    serializer_class = GallerySerializer
+    lookup_field = "id"
