@@ -33,8 +33,10 @@ class GalleryListAPI(ListCreateAPIView):
     serializer_class = GallerySerializer
 
     def get_queryset(self):
-        return FoodGallery.objects.select_related("nutrient").filter(
-            user=self.request.user
+        return (
+            FoodGallery.objects.select_related("nutrient")
+            .filter(user=self.request.user)
+            .order_by("-id")
         )
 
     def perform_create(self, serializer):
