@@ -16,15 +16,22 @@ class HomeScreenAPI(APIView):
         result = {"kor_name": user.kor_name}
         cnt = FoodGallery.objects.filter(user=user).count()
         # 3으로 나눴을 때 남는 음식을 가져옴
-        start = cnt - cnt % 3 if cnt % 3 else cnt - 3
-        foods = (
-            FoodGallery.objects.select_related("nutrient")
-            .filter(user=user)
-            .order_by("id")[start:]
-        )
-        result.update(
-            {"calories": [f.nutrient.kcal if f.nutrient else 0 for f in foods]}
-        )
+        try:
+            start = cnt - cnt % 3 if cnt % 3 else cnt - 3
+            foods = (
+                FoodGallery.objects.select_related("nutrient")
+                .filter(user=user)
+                .order_by("id")[start:]
+            )
+            result.update(
+                {
+                    "calories": [
+                        f.nutrient.kcal if f.nutrient else 0 for f in foods
+                    ]
+                }
+            )
+        except Exception:
+            result.update({"calories": []})
 
         return Response(result)
 
