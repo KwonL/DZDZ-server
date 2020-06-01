@@ -14,6 +14,22 @@ class HomeScreenAPI(APIView):
     def get(self, *args, **kwargs):
         user = self.request.user
         result = {"kor_name": user.kor_name}
+
+        try:
+            target = user.target_nutrient
+        except Exception:
+            target = None
+        result.update(
+            {
+                "target_nutrients": {
+                    "calorie": target.calorie if target else 0,
+                    "carbohydrate": target.carbohydrate if target else 0,
+                    "protein": target.protein if target else 0,
+                    "fat": target.fat if target else 0,
+                }
+            }
+        )
+
         cnt = FoodGallery.objects.filter(user=user).count()
         # 3으로 나눴을 때 남는 음식을 가져옴
         try:

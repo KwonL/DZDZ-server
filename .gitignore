@@ -11,4 +11,4 @@ __pycache__/
 
 # local data
 db.sqlite3
-media/
+media

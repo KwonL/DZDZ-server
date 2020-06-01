@@ -45,3 +45,13 @@ class Nutrient(models.Model):
     fat = models.FloatField()
     salt = models.FloatField()
     kcal = models.FloatField()
+
+
+class TargetNutrient(models.Model):
+    user = models.OneToOneField(
+        "user.User", on_delete=models.CASCADE, related_name="target_nutrient"
+    )
+    calorie = models.FloatField()
+    carbohydrate = models.FloatField()
+    protein = models.FloatField()
+    fat = models.FloatField()

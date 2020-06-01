@@ -11,8 +11,8 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, password, **extra_fields):
-        extra_fields['is_staff'] = True
-        extra_fields['is_superuser'] = True
+        extra_fields["is_staff"] = True
+        extra_fields["is_superuser"] = True
         return self.create_user(username, password, **extra_fields)
 
 
@@ -30,4 +30,4 @@ class User(AbstractUser):
     objects = UserManager()
 
     class Meta:
-        db_table = 'user'
+        db_table = "user"
