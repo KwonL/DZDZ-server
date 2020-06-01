@@ -43,7 +43,22 @@ class HomeScreenAPI(APIView):
                 {
                     "calories": [
                         f.nutrient.kcal if f.nutrient else 0 for f in foods
-                    ]
+                    ],
+                    "carbohydrate": sum(
+                        [
+                            f.nutrient.carbohydrate if f.nutrient else 0
+                            for f in foods
+                        ]
+                    ),
+                    "protein": sum(
+                        [
+                            f.nutrient.protein if f.nutrient else 0
+                            for f in foods
+                        ]
+                    ),
+                    "fat": sum(
+                        [f.nutrient.fat if f.nutrient else 0 for f in foods]
+                    ),
                 }
             )
         except Exception:
