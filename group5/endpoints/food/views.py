@@ -41,12 +41,24 @@ class HomeScreenAPI(APIView):
             )
             result.update(
                 {
-                    "calories": [f.nutrient.kcal for f in foods],
+                    "calories": [
+                        f.nutrient.kcal if f.nutrient else 0 for f in foods
+                    ],
                     "carbohydrate": sum(
-                        [f.nutrient.carbohydrate for f in foods]
+                        [
+                            f.nutrient.carbohydrate if f.nutrient else 0
+                            for f in foods
+                        ]
                     ),
-                    "protein": sum([f.nutrient.protein for f in foods]),
-                    "fat": sum([f.nutrient.fat for f in foods]),
+                    "protein": sum(
+                        [
+                            f.nutrient.protein if f.nutrient else 0
+                            for f in foods
+                        ]
+                    ),
+                    "fat": sum(
+                        [f.nutrient.fat if f.nutrient else 0 for f in foods]
+                    ),
                 }
             )
 
@@ -77,7 +89,8 @@ class HomeScreenAPI(APIView):
             result.update(
                 {"image": self.request.build_absolute_uri(image.image.url)}
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             result.update(
                 {
                     "calories": [],
