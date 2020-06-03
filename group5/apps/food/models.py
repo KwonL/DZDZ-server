@@ -55,3 +55,11 @@ class TargetNutrient(models.Model):
     carbohydrate = models.FloatField()
     protein = models.FloatField()
     fat = models.FloatField()
+
+
+class CharacterImage(models.Model):
+    UNDER, NORMAL, OVER = 0, 1, 2
+    type_choices = [(UNDER, "적음"), (NORMAL, "보통"), (OVER, "많음")]
+
+    image = models.ImageField(upload_to=gallery_image_path)
+    type = models.IntegerField(choices=type_choices, default=NORMAL)

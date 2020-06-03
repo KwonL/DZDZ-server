@@ -5,7 +5,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.food.models import FoodGallery, Nutrient
+from apps.food.models import CharacterImage, FoodGallery, Nutrient
 
 from .serializers import GallerySerializer
 
@@ -41,28 +41,52 @@ class HomeScreenAPI(APIView):
             )
             result.update(
                 {
-                    "calories": [
-                        f.nutrient.kcal if f.nutrient else 0 for f in foods
-                    ],
+                    "calories": [f.nutrient.kcal for f in foods],
                     "carbohydrate": sum(
-                        [
-                            f.nutrient.carbohydrate if f.nutrient else 0
-                            for f in foods
-                        ]
+                        [f.nutrient.carbohydrate for f in foods]
                     ),
-                    "protein": sum(
-                        [
-                            f.nutrient.protein if f.nutrient else 0
-                            for f in foods
-                        ]
-                    ),
-                    "fat": sum(
-                        [f.nutrient.fat if f.nutrient else 0 for f in foods]
-                    ),
+                    "protein": sum([f.nutrient.protein for f in foods]),
+                    "fat": sum([f.nutrient.fat for f in foods]),
                 }
             )
+
+            if (
+                sum(result.get("calories"))
+                > result.get("target_nutrients", {}).get("calorie") * 1.2
+            ):
+                image = (
+                    CharacterImage.objects.filter(type=CharacterImage.OVER)
+                    .order_by("?")
+                    .first()
+                )
+            elif (
+                sum(result.get("calories"))
+                < result.get("target_nutrients", {}).get("calorie") * 0.8
+            ):
+                image = (
+                    CharacterImage.objects.filter(type=CharacterImage.UNDER)
+                    .order_by("?")
+                    .first()
+                )
+            else:
+                image = (
+                    CharacterImage.objects.filter(type=CharacterImage.NORMAL)
+                    .order_by("?")
+                    .first()
+                )
+            result.update(
+                {"image": self.request.build_absolute_uri(image.image.url)}
+            )
         except Exception:
-            result.update({"calories": []})
+            result.update(
+                {
+                    "calories": [],
+                    "carbohydrate": 0,
+                    "protein": 0,
+                    "fat": 0,
+                    "image": "",
+                }
+            )
 
         return Response(result)
 
